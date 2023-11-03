@@ -23,7 +23,7 @@ These have rules governing how values interact (see `README.md`), but we're only
 one sig Table {
   inputs: one Type,
   outputs: one Type,
-  rules: Value -> Value,
+  rules: Value one-> Value,
   wantToCollapse: set Value,
 }
 
@@ -72,6 +72,4 @@ So for our purposes, we should be OK if we can ensure:
 1. The types on the LHS of every rule match the inputs (in order, which again wasn't modeled)
 2. The types on the RHS of every rule match the outputs
 3. The types in collapses match the types in the inputs
-
-In real code, we'll also have to care about eliminiating duplicate values on the LHS of the rules.
-This doesn't come up in Alloy because everything is a set, for all intents and purposes.
+4. There are no duplicate rules in the LHS of the rules (that's the `one` in `Value one-> Value` above.)
