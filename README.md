@@ -5,7 +5,9 @@ This repo has two purposes:
 1. To provide me with a tool I've been wanting.
 2. To demonstrate some ideas about structuring Elm apps.
 
-The subject: decision tables!
+## Decision Tables
+
+Our subject: decision tables!
 I want an app that make working with decision tables super easy.
 Here comes one now, for helping me decide whether or not to open the windows:
 
@@ -49,15 +51,70 @@ Here's a more complex example, for deciding whether or not to enable dark mode o
 | Marketing    | Unknown         | Dark                               | Dark         |
 | Marketing    | Light           | -                                  | Light        |
 | Marketing    | Dark            | -                                  | Dark         |
-| Marketing    | Unset           | Light                              | Dark         |
-| Marketing    | Unset           | Dark                               | Dark         |
+| Marketing    | System          | Light                              | Dark         |
+| Marketing    | System          | Dark                               | Dark         |
 | Product      | Unknown         | Light                              | Light        |
 | Product      | Unknown         | Dark                               | Dark         |
 | Product      | Light           | -                                  | Light        |
 | Product      | Dark            | -                                  | Dark         |
-| Product      | Unset           | Light                              | Light        |
-| Product      | Unset           | Dark                               | Dark         |
+| Product      | System          | Light                              | Light        |
+| Product      | System          | Dark                               | Dark         |
 
 These are fantastic for both calculating and communicating about complex logic in UIs.
 You can do a bunch of other interesting things with them too: finding properties for property tests, determining that you thought you needed some input but you don't, finding that you specified two conflicting things, etc.
 Here's further reading: [an introduction](https://www.hillelwayne.com/post/decision-tables/), [more advanced patterns](https://www.hillelwayne.com/post/decision-table-patterns/), [modeling missing requirements](https://www.hillelwayne.com/requirements/).
+(I have some materials by other authors if you ask me, but these are really good.
+Just read 'em!)
+
+## Domain Modeling
+
+Let's break down the kinds of inputs and outputs we've seen:
+
+- **Boolean:** yes or no, true or false.
+  - "Raining" or "Open Windows?" above.
+  - Could also model our color scheme above: "Is it dark mode?"
+- **Enumeration:** A set of possible values.
+  - "User Preference" above, which can be:
+    - Unknown (not logged in)
+    - Light / Dark / System (concrete preference)
+- **Segmented Range:** sectioning up a continuous value.
+  Importantly, this should always have full coverage of the possible range of values!
+  It's not much use if the value is 70% and the two rules are "below 70%" and "above 70%", so the app needs to validate exhaustiveness here.
+
+Once you have these possibilities, you can build them into tables.
+All together, that might look like this:
+
+```
+type Possibilities
+    = Boolean { trueLabel: String, falseLabel: String }
+    | Enum (List String)
+    | SegmentedRange { min: Int, max: Int, segments: List (Int, Int) }
+
+
+type Value
+    = StringValue String
+    | IntValue Int
+    | BoolValue Bool
+
+
+type alias Column =
+    { name : String
+    , possibilities : Possibilities
+    }
+
+
+type alias Rule =
+    { inputs : List Value
+    , outputs: List Value
+    }
+
+
+type alias Table =
+    { inputs: List Column
+    , outputs: List Column
+    , rules: List Rules
+    , wantToCollapse: List (List Value)
+    }
+```
+
+There's some work to do to keep this all in sync, so it needs to live behind a solid module boundary.
