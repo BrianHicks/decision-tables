@@ -24,7 +24,7 @@ one sig Table {
   inputs: one Type,
   outputs: one Type,
   rules: Value -> Value,
-  wantToCollapse: Value,
+  wantToCollapse: set Value,
 }
 
 -- get the set of values on the left-hand side of the rules
