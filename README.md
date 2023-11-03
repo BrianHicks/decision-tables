@@ -118,3 +118,4 @@ type alias Table =
 ```
 
 There's some work to do to keep this all in sync, so it needs to live behind a solid module boundary.
+If you're interested in all the ways this could go wrong, there's an Alloy workup at `type-safety-modeling.md` in the root of this repo.
