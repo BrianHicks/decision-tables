@@ -2,6 +2,9 @@
 title: Modeling Decision Tables
 ---
 
+**Hi!** This is a literate [Alloy](https://alloytools.org) file.
+If you have Alloy installed, you can load this up directly and check my work.
+
 Start with types.
 For the purposes of this app, we're only using concrete types, so no need to model type parameters or anything.
 
